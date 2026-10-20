@@ -67,7 +67,7 @@ function renderSyllabus() {
 
 function renderQuestions() {
   const grid = document.querySelector('#question-grid');
-  const filtered = activeSubject === 'All' ? questions : questions.filter(item => item.subject === activeSubject);
+  const filtered = questions.filter(item => (activeSubject === 'All' || item.subject === activeSubject) && (!item.classNumber || item.classNumber === activeClass));
   const visible = filtered.slice(0, shown);
   const chapterCount = new Set(filtered.map(item => item.chapter).filter(Boolean)).size;
   document.querySelector('#question-count').textContent = `${filtered.length} questions · ${chapterCount || 'mixed'} chapters`;
@@ -80,7 +80,7 @@ function renderQuestions() {
 }
 
 document.querySelectorAll('[data-scroll]').forEach(button => button.addEventListener('click', () => document.querySelector(button.dataset.scroll).scrollIntoView({behavior:'smooth'})));
-document.querySelectorAll('.class-tab').forEach(button => button.addEventListener('click', () => { activeClass = button.dataset.class; document.querySelectorAll('.class-tab').forEach(tab => tab.classList.toggle('active', tab === button)); renderSyllabus(); }));
+document.querySelectorAll('.class-tab').forEach(button => button.addEventListener('click', () => { activeClass = button.dataset.class; shown = 3; document.querySelectorAll('.class-tab').forEach(tab => tab.classList.toggle('active', tab === button)); renderSyllabus(); renderQuestions(); }));
 document.querySelectorAll('.filter').forEach(button => button.addEventListener('click', () => { activeSubject = button.dataset.subject; shown = 3; document.querySelectorAll('.filter').forEach(filter => filter.classList.toggle('active', filter === button)); renderQuestions(); }));
 document.querySelector('#load-more').addEventListener('click', () => { shown += 3; renderQuestions(); });
 renderSyllabus();
@@ -107,6 +107,10 @@ timerToggle.addEventListener('click', () => {
     timerToggle.textContent = 'Resume focus';
     return;
   }
+  if (timerSeconds === 0) {
+    timerSeconds = 25 * 60;
+    updateTimer();
+  }
   timerToggle.textContent = 'Pause focus';
   timerInterval = setInterval(() => {
     timerSeconds = Math.max(0, timerSeconds - 1);
@@ -126,13 +130,33 @@ document.querySelector('#timer-reset').addEventListener('click', () => {
   updateTimer();
 });
 
+const flashcardDeck = [
+  {q:'What is the powerhouse of the cell?',a:'Mitochondria release usable energy through cellular respiration.'},
+  {q:'What is photosynthesis?',a:'The process by which green plants use light energy to make food from carbon dioxide and water.'},
+  {q:'What is the SI unit of force?',a:'The newton (N).'},
+  {q:'What is the value of pi approximately?',a:'3.14159, often approximated as 22/7 for calculations.'},
+  {q:'What is a prime number?',a:'A whole number greater than 1 with exactly two factors: 1 and itself.'},
+  {q:'What is the function of the cell membrane?',a:'It regulates the movement of substances into and out of the cell.'},
+  {q:'What is democracy?',a:'A form of government in which people choose their representatives through elections.'},
+  {q:'What is a metaphor?',a:'A figure of speech that describes one thing as another to suggest a similarity.'},
+  {q:'What is evaporation?',a:'The change of a liquid into vapour from its surface.'},
+  {q:'What is an equation?',a:'A mathematical statement showing that two expressions are equal.'},
+  {q:'What is federalism?',a:'A system in which power is divided between different levels of government.'},
+  {q:'What is a food chain?',a:'A sequence showing how energy passes from one organism to another through feeding.'}
+];
+let flashcardIndex = 0;
+function renderFlashcard() {
+  const card = flashcardDeck[flashcardIndex];
+  document.querySelector('.flash-front').textContent = card.q;
+  document.querySelector('.flash-back').innerHTML = `${card.a}<br /><small>Tap to flip back</small>`;
+  document.querySelector('#flash-index').textContent = `Card ${String(flashcardIndex + 1).padStart(2, '0')} / ${flashcardDeck.length}`;
+}
+renderFlashcard();
 document.querySelector('#flashcard').addEventListener('click', event => event.currentTarget.classList.toggle('flipped'));
 document.querySelector('#next-card').addEventListener('click', () => {
-  const flashcard = document.querySelector('#flashcard');
-  flashcard.classList.remove('flipped');
-  const index = document.querySelector('#flash-index');
-  const current = Number(index.textContent.match(/\d+/)[0]);
-  index.textContent = `Card ${String(current === 12 ? 1 : current + 1).padStart(2, '0')} / 12`;
+  document.querySelector('#flashcard').classList.remove('flipped');
+  flashcardIndex = (flashcardIndex + 1) % flashcardDeck.length;
+  renderFlashcard();
 });
 document.querySelectorAll('.quiz-options button').forEach(option => option.addEventListener('click', () => {
   document.querySelectorAll('.quiz-options button').forEach(item => item.classList.remove('correct', 'incorrect'));
