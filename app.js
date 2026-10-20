@@ -6,7 +6,7 @@ const fallbackSyllabus = {
   10: {Maths:['Real Numbers','Polynomials','Pair of Linear Equations'],English:['A Letter to God','Nelson Mandela: Long Walk to Freedom','Two Stories About Flying'],Science:['Chemical Reactions and Equations','Life Processes','Light: Reflection and Refraction'], 'Social Science':['Resources and Development','Power Sharing','Development']}
 };
 const syllabus = window.studyHubSyllabus || fallbackSyllabus;
-const icons = {Maths:'∑',English:'Aa',Science:'✧','Social Science':'◈'};
+const icons = {Maths:'∑',English:'Aa',Science:'✧','Social Science':'◈',Hindi:'हि'};
 const baseQuestions = [
   {subject:'Maths',classNumber:'9',source:'NCERT Exemplar',q:'A two-digit number is four times the sum of its digits. If 18 is added, its digits are reversed. Find the number.',a:'The number is 24. Let the digits be 10x + y and use both conditions to form two linear equations.'},
   {subject:'English',classNumber:'9',source:'Textbook + inference',q:'In “The Sound of Music”, how does Evelyn Glennie experience music differently from most people?',a:'She senses music through vibrations in her body, allowing her to perform despite profound deafness.'},
