@@ -40,7 +40,7 @@ const questionPrompts = [
 function createChapterQuestions() {
   const generated = [];
   Object.entries(syllabus).forEach(([classNumber, subjects]) => Object.entries(subjects).filter(([subject]) => subject !== '_books').forEach(([subject, chapters]) => chapters.forEach(chapter => {
-    for (let number = 1; number <= 100; number += 1) {
+    for (let number = 1; number <= questionPrompts.length; number += 1) {
       const template = questionPrompts[(number - 1) % questionPrompts.length];
       generated.push({subject, source:'Original practice', chapter, classNumber, q:`${template.replace('{chapter}', chapter)} (Question ${number}/100)`, a:`Use your Class ${classNumber} NCERT chapter “${chapter}” to build a complete answer with a definition, explanation, and suitable example.`});
     }
@@ -55,7 +55,7 @@ let shown = 3;
 function renderSyllabus() {
   const grid = document.querySelector('#syllabus-grid');
   const data = syllabus[activeClass];
-  grid.innerHTML = Object.entries(data).filter(([subject]) => subject !== '_books').map(([subject, chapters]) => `<article class="subject-card"><header><span class="icon">${icons[subject]}</span><span class="chapter-count">${chapters.length} chapters</span></header><h3>${subject}</h3><p><strong>${data._books?.[subject] || 'NCERT textbook'}</strong><br />100 original questions per chapter</p><div class="chapter-list">${chapters.slice(0, 3).map(chapter => `<span>${chapter}</span>`).join('')}</div><button class="dash-link chapter-practice" data-subject="${subject}">Practice all ${chapters.length} chapters →</button></article>`).join('');
+  grid.innerHTML = Object.entries(data).filter(([subject]) => subject !== '_books').map(([subject, chapters]) => `<article class="subject-card"><header><span class="icon">${icons[subject]}</span><span class="chapter-count">${chapters.length} chapters</span></header><h3>${subject}</h3><p><strong>${data._books?.[subject] || 'NCERT textbook'}</strong><br />20 guided practice prompts per chapter</p><div class="chapter-list">${chapters.slice(0, 3).map(chapter => `<span>${chapter}</span>`).join('')}</div><button class="dash-link chapter-practice" data-subject="${subject}">Practice all ${chapters.length} chapters →</button></article>`).join('');
   grid.querySelectorAll('.chapter-practice').forEach(button => button.addEventListener('click', () => {
     activeSubject = button.dataset.subject;
     shown = 3;
@@ -71,11 +71,11 @@ function renderQuestions() {
   const visible = filtered.slice(0, shown);
   const chapterCount = new Set(filtered.map(item => item.chapter).filter(Boolean)).size;
   document.querySelector('#question-count').textContent = `${filtered.length} questions · ${chapterCount || 'mixed'} chapters`;
-  grid.innerHTML = visible.map(item => `<article class="question-card"><div class="q-meta"><span>${item.subject}</span><span>${item.source}</span></div><h3>${item.q}</h3><button class="reveal" data-index="${questions.indexOf(item)}">Reveal answer&nbsp; ↗</button></article>`).join('');
+  grid.innerHTML = visible.map(item => `<article class="question-card"><div class="q-meta"><span>${item.subject}</span><span>${item.source}</span></div><h3>${item.q}</h3><button class="reveal" data-index="${questions.indexOf(item)}">Show answer guidance&nbsp; ↗</button></article>`).join('');
   document.querySelector('#load-more').style.display = shown >= filtered.length ? 'none' : 'block';
   grid.querySelectorAll('.reveal').forEach(button => button.addEventListener('click', () => {
     const item = questions[button.dataset.index];
-    button.outerHTML = `<div class="answer"><strong>Answer</strong>${item.a}</div>`;
+    button.outerHTML = `<div class="answer"><strong>${item.chapter ? 'Answer guidance' : 'Answer'}</strong>${item.a}</div>`;
   }));
 }
 
