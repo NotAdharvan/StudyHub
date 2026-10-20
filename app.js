@@ -8,12 +8,12 @@ const fallbackSyllabus = {
 const syllabus = window.studyHubSyllabus || fallbackSyllabus;
 const icons = {Maths:'∑',English:'Aa',Science:'✧','Social Science':'◈'};
 const baseQuestions = [
-  {subject:'Maths',source:'NCERT Exemplar',q:'A two-digit number is four times the sum of its digits. If 18 is added, its digits are reversed. Find the number.',a:'The number is 24. Let the digits be 10x + y and use both conditions to form two linear equations.'},
-  {subject:'English',source:'Textbook + inference',q:'In “The Sound of Music”, how does Evelyn Glennie experience music differently from most people?',a:'She senses music through vibrations in her body, allowing her to perform despite profound deafness.'},
-  {subject:'Science',source:'Application lab',q:'Why does a metal spoon feel colder than a wooden spoon in the same room?',a:'Metal conducts heat away from your hand faster than wood, so it feels colder even though both are at room temperature.'},
-  {subject:'Social Science',source:'NCERT + map work',q:'Why is power sharing desirable in a democracy? State two reasons.',a:'It reduces conflict between social groups and ensures political stability by giving all groups a voice.'},
-  {subject:'Maths',source:'HOTS practice',q:'The area of a circle is 154 cm². Using π = 22/7, what is its radius?',a:'7 cm. Since πr² = 154, r² = 49 and r = 7.'},
-  {subject:'Science',source:'Competency check',q:'A plant kept in darkness for two days is tested with iodine. What change do you expect and why?',a:'No blue-black colour appears because the plant used up its stored starch while kept away from light.'}
+  {subject:'Maths',classNumber:'9',source:'NCERT Exemplar',q:'A two-digit number is four times the sum of its digits. If 18 is added, its digits are reversed. Find the number.',a:'The number is 24. Let the digits be 10x + y and use both conditions to form two linear equations.'},
+  {subject:'English',classNumber:'9',source:'Textbook + inference',q:'In “The Sound of Music”, how does Evelyn Glennie experience music differently from most people?',a:'She senses music through vibrations in her body, allowing her to perform despite profound deafness.'},
+  {subject:'Science',classNumber:'9',source:'Application lab',q:'Why does a metal spoon feel colder than a wooden spoon in the same room?',a:'Metal conducts heat away from your hand faster than wood, so it feels colder even though both are at room temperature.'},
+  {subject:'Social Science',classNumber:'9',source:'NCERT + map work',q:'Why is power sharing desirable in a democracy? State two reasons.',a:'It reduces conflict between social groups and ensures political stability by giving all groups a voice.'},
+  {subject:'Maths',classNumber:'10',source:'HOTS practice',q:'The area of a circle is 154 cm². Using π = 22/7, what is its radius?',a:'7 cm. Since πr² = 154, r² = 49 and r = 7.'},
+  {subject:'Science',classNumber:'8',source:'Competency check',q:'A plant kept in darkness for two days is tested with iodine. What change do you expect and why?',a:'No blue-black colour appears because the plant used up its stored starch while kept away from light.'}
 ];
 const questionPrompts = [
   'Define the central idea of {chapter} in your own words.',
@@ -67,7 +67,7 @@ function renderSyllabus() {
 
 function renderQuestions() {
   const grid = document.querySelector('#question-grid');
-  const filtered = questions.filter(item => (activeSubject === 'All' || item.subject === activeSubject) && (!item.classNumber || item.classNumber === activeClass));
+  const filtered = questions.filter(item => (activeSubject === 'All' || item.subject === activeSubject) && item.classNumber === activeClass);
   const visible = filtered.slice(0, shown);
   const chapterCount = new Set(filtered.map(item => item.chapter).filter(Boolean)).size;
   document.querySelector('#question-count').textContent = `${filtered.length} questions · ${chapterCount || 'mixed'} chapters`;
